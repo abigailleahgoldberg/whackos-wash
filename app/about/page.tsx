@@ -78,7 +78,7 @@ export default function About() {
                 a bucket, some soap, and a sponge, and Whacko&apos;s Wash was born.
               </p>
               <p>
-                My mom and dad help me get to your place (I can&apos;t drive yet!), but
+                You bring your car to me right here in Klamath Falls (I can&apos;t drive yet!), but
                 every single bit of the washing, scrubbing, and detailing? That&apos;s
                 all me. I treat every car like it&apos;s a Ferrari.
               </p>
