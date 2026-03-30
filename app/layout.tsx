@@ -34,12 +34,21 @@ export const metadata: Metadata = {
     siteName: "Whacko's Wash",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Whacko's Wash — Kid-Powered Car Detailing in Klamath Falls, Oregon",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Whacko's Wash | Kid-Powered Car Detailing",
     description:
       "A 12-year-old entrepreneur in Klamath Falls washing cars and making them sparkle. Book your wash online!",
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
