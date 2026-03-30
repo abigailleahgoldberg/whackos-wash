@@ -1,9 +1,9 @@
 {
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/:path(.*)",
       "has": [{ "type": "host", "value": "www.whackoswash.com" }],
-      "destination": "https://whackoswash.com/:path*",
+      "destination": "https://whackoswash.com/:path",
       "permanent": true
     }
   ]
