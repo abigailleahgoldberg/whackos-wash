@@ -216,7 +216,7 @@ export default function Gallery() {
           >
             Want results like these? 🚗
           </h2>
-          <p className="text-white opacity-90 mb-8 text-lg">Book your wash online in 60 seconds. We come to you.</p>
+          <p className="text-white opacity-90 mb-8 text-lg">Book your wash online in 60 seconds. Bring your car to Whacko in Klamath Falls.</p>
           <Link href="/contact" className="cta-button text-lg">
             Book Your Wash Now!
           </Link>

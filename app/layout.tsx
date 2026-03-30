@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Whacko's Wash — Klamath Falls' most fun car detailing service, run by a 12-year-old entrepreneur! Exterior wash from $25, full detail, Sparkle Package. Book online now!",
   keywords:
-    "whackos wash, car detailing klamath falls, kids car wash klamath falls, fun car cleaning klamath falls, car wash klamath falls oregon, mobile car wash klamath falls, affordable car detail oregon",
+    "whackos wash, car detailing klamath falls, kids car wash klamath falls, fun car cleaning klamath falls, car wash klamath falls oregon, affordable car detail oregon, kid entrepreneur klamath falls",
   metadataBase: new URL("https://whackoswash.com"),
   alternates: {
     canonical: "https://whackoswash.com",

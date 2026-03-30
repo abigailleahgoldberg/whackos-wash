@@ -184,7 +184,7 @@ export default function Contact() {
                   <span className="text-3xl">📍</span>
                   <div>
                     <p className="font-bold" style={{ color: "#0A1628" }}>Location</p>
-                    <p className="text-gray-600">Klamath Falls, Oregon (we come to you!)</p>
+                    <p className="text-gray-600">Klamath Falls, Oregon (you bring your car to us!)</p>
                   </div>
                 </div>
               </div>
