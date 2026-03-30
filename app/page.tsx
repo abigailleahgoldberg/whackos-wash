@@ -28,7 +28,7 @@ const services = [
 
 const trustStats = [
   { emoji: "💪", label: "100% Kid Powered" },
-  { emoji: "📍", label: "Portland Born" },
+  { emoji: "📍", label: "Klamath Falls Born" },
   { emoji: "🔥", label: "Zero Shortcuts" },
   { emoji: "😄", label: "Smile Guaranteed" },
 ];
@@ -112,7 +112,7 @@ export default function Home() {
             "Kid Entrepreneur",
             "Super Fun",
             "Super Clean",
-            "Portland Local",
+            "Klamath Falls Local",
           ].map((item, i) => (
             <span
               key={i}
@@ -139,7 +139,7 @@ export default function Home() {
             Hi, I&apos;m Whacko! 👋
           </h2>
           <p className="text-lg sm:text-xl leading-relaxed" style={{ color: "#333" }}>
-            At just 12 years old I started Whacko&apos;s Wash right here in Portland,
+            At just 12 years old I started Whacko&apos;s Wash right here in Klamath Falls,
             Oregon because I love making cars shine! Every wash gets the full Whacko
             treatment: serious scrubbing, serious sparkle. Your car is in good hands.
           </p>

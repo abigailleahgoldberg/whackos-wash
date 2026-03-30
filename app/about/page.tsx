@@ -23,7 +23,7 @@ export default function About() {
             Meet Whacko! 🧒
           </h1>
           <p className="text-lg sm:text-xl text-white opacity-90">
-            The kid behind the cleanest cars in Portland
+            The kid behind the cleanest cars in Klamath Falls
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0" style={{ lineHeight: 0 }}>
@@ -62,7 +62,7 @@ export default function About() {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
-                I&apos;m 12 years old, and I live right here in Portland, Oregon. Ever
+                I&apos;m 12 years old, and I live right here in Klamath Falls, Oregon. Ever
                 since I was little, I loved washing my parents&apos; cars. Something about
                 seeing a dirty car turn shiny and new just makes me happy.
               </p>

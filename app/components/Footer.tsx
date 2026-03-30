@@ -20,7 +20,7 @@ export default function Footer() {
             <p className="text-gray-400 text-sm">
               Kid-Powered Sparkle for Your Car!
             </p>
-            <p className="text-gray-400 text-sm mt-1">Portland, Oregon</p>
+            <p className="text-gray-400 text-sm mt-1">Klamath Falls, Oregon</p>
           </div>
 
           {/* Links */}
@@ -44,7 +44,7 @@ export default function Footer() {
             <div className="space-y-2 text-sm text-gray-300">
               <p>📧 hello@whackoswash.com</p>
               <p>📱 (503) 555-WASH</p>
-              <p>📍 Portland, OR</p>
+              <p>📍 Klamath Falls, OR</p>
             </div>
           </div>
         </div>

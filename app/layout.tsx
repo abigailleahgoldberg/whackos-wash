@@ -17,11 +17,11 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Whacko's Wash | Kid Car Detailing Portland Oregon",
+  title: "Whacko's Wash | Kid Car Detailing Klamath Falls Oregon",
   description:
-    "Whacko's Wash is Portland's most fun car detailing service, run by a 12-year-old entrepreneur! Exterior wash, full detail, Sparkle Package. Book now!",
+    "Whacko's Wash is Klamath Falls' most fun car detailing service, run by a 12-year-old entrepreneur! Exterior wash, full detail, Sparkle Package. Book now!",
   keywords:
-    "whackos wash, car detailing portland, kids car wash portland, fun car cleaning portland, car wash portland oregon",
+    "whackos wash, car detailing klamath falls, kids car wash klamath falls, fun car cleaning klamath falls, car wash klamath falls oregon",
 };
 
 export default function RootLayout({
