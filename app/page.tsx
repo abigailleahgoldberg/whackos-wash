@@ -12,9 +12,9 @@ const services = [
   },
   {
     emoji: "✨",
-    name: "Full Detail",
+    name: "Full Interior Detail",
     desc: "Inside and out, every inch gets the Whacko treatment.",
-    price: "$75",
+    price: "$60",
     color: "#7FE000",
   },
   {

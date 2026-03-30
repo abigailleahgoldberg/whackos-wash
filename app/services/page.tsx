@@ -19,7 +19,7 @@ const services = [
   {
     emoji: "🧹",
     name: "Interior Vacuum & Wipe",
-    price: "$30",
+    price: "$35",
     desc: "No crumb left behind. Seriously.",
     gradient: "linear-gradient(135deg, #7FE000, #00AAFF)",
   },
@@ -33,7 +33,7 @@ const services = [
   {
     emoji: "🚗",
     name: "Exterior + Interior Combo",
-    price: "$75",
+    price: "$60",
     desc: "The full Whacko experience. In and out.",
     gradient: "linear-gradient(135deg, #FF3333, #FFD700)",
   },

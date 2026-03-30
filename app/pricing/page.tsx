@@ -5,16 +5,16 @@ import WaveDivider from "../components/WaveDivider";
 export const metadata: Metadata = {
   title: "Pricing | Whacko's Wash — Affordable Car Detailing Klamath Falls",
   description:
-    "Clear, honest pricing. Exterior wash from $25, interior from $30, full detail $75, Sparkle Package $100. No hidden fees. Klamath Falls, Oregon.",
+    "Clear, honest pricing. Exterior wash $25, interior vacuum $35, full interior detail $60, Sparkle Package $100. No hidden fees. Klamath Falls, Oregon.",
 };
 
 const tiers = [
   {
     name: "Quick Clean",
-    price: "$25 - $30",
+    price: "$25 - $35",
     desc: "Exterior or Interior only",
     features: [
-      "Hand wash exterior OR vacuum interior",
+      "Exterior hand wash $25 OR Interior vacuum & wipe $35",
       "Towel dry / wipe down",
       "Quick and efficient",
       "Perfect for maintenance washes",
@@ -23,13 +23,13 @@ const tiers = [
     emoji: "🚿",
   },
   {
-    name: "Full Clean",
-    price: "$60 - $75",
-    desc: "Both in and out",
+    name: "Full Interior Detail",
+    price: "$60",
+    desc: "Full interior detail",
     features: [
-      "Complete exterior hand wash",
-      "Full interior vacuum and wipe",
+      "Complete interior vacuum",
       "Dashboard and console detail",
+      "Door panels and trim",
       "Windows inside and out",
     ],
     color: "#7FE000",

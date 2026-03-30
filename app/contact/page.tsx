@@ -129,9 +129,8 @@ export default function Contact() {
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors bg-white">
                     <option value="">Pick a service...</option>
                     <option value="exterior">Basic Exterior Wash - $25</option>
-                    <option value="interior">Interior Vacuum & Wipe - $30</option>
+                    <option value="interior">Interior Vacuum & Wipe - $35</option>
                     <option value="full-interior">Full Interior Detail - $60</option>
-                    <option value="combo">Exterior + Interior Combo - $75</option>
                     <option value="sparkle">Complete Sparkle Package - $100</option>
                     <option value="fleet">Fleet / Multiple Cars - Call for pricing</option>
                     <option value="other">Not sure yet</option>
