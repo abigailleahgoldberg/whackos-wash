@@ -31,13 +31,6 @@ const services = [
     gradient: "linear-gradient(135deg, #FFD700, #FF3333)",
   },
   {
-    emoji: "🚗",
-    name: "Exterior + Interior Combo",
-    price: "$60",
-    desc: "The full Whacko experience. In and out.",
-    gradient: "linear-gradient(135deg, #FF3333, #FFD700)",
-  },
-  {
     emoji: "🌟",
     name: "Complete Sparkle Package",
     price: "$100",
@@ -114,7 +107,7 @@ export default function Services() {
                     href="/contact"
                     className="cta-button text-sm !py-2 !px-5"
                   >
-                    Book It
+                    {svc.price === "Call for pricing" ? "Get in Touch" : "Book It"}
                   </Link>
                 </div>
               </div>
