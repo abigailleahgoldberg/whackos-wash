@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import WaveDivider from "../components/WaveDivider";
+
+export const metadata: Metadata = {
+  title: "Pricing | Whacko's Wash — Affordable Car Detailing Klamath Falls",
+  description:
+    "Clear, honest pricing. Exterior wash from $25, interior from $30, full detail $75, Sparkle Package $100. No hidden fees. Klamath Falls, Oregon.",
+};
 
 const tiers = [
   {

@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import WaveDivider from "../components/WaveDivider";
+
+export const metadata: Metadata = {
+  title: "Services | Whacko's Wash — Car Detailing Klamath Falls",
+  description:
+    "Exterior wash from $25, full interior detail, and the ultimate Sparkle Package. Kid-powered car cleaning in Klamath Falls, Oregon. Book online!",
+};
 
 const services = [
   {

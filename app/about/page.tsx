@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import WaveDivider from "../components/WaveDivider";
+
+export const metadata: Metadata = {
+  title: "About Whacko | Kid Entrepreneur Car Wash Klamath Falls",
+  description:
+    "Meet Whacko — a 12-year-old Klamath Falls entrepreneur who started his own car washing business. Real hustle, real sparkle.",
+};
 
 export default function About() {
   return (

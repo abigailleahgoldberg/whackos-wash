@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Gallery | Whacko's Wash — Before & After Car Detailing",
+  description:
+    "See the results. Before and after photos of Whacko's car washing and detailing work in Klamath Falls, Oregon.",
+};
 
 const placeholders = [
   { label: "Before", color: "#FF3333", emoji: "🚗" },
