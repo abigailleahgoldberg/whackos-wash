@@ -1,16 +1,48 @@
 "use client";
 
-import Script from "next/script";
+import { useState } from "react";
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    carType: "",
+    service: "",
+    preferredDate: "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed to send");
+      setSubmitted(true);
+    } catch {
+      setError("Oops! Something went wrong. Try texting us directly.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
-      {/* Google Calendar scheduling CSS */}
-      <link
-        href="https://calendar.google.com/calendar/scheduling-button-script.css"
-        rel="stylesheet"
-      />
-
       {/* Hero */}
       <section
         className="py-20 text-center relative overflow-hidden"
@@ -34,7 +66,7 @@ export default function Contact() {
             Let&apos;s Make Your Car Whacko-Clean!
           </h1>
           <p className="text-lg sm:text-xl text-white opacity-90">
-            Pick a time that works for you — it goes straight to our calendar
+            Fill out the form and we will get back to you within 24 hours
           </p>
         </div>
         <div className="mt-12" style={{ lineHeight: 0 }}>
@@ -44,55 +76,87 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Booking section */}
+      {/* Form section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12">
-
-          {/* Booking CTA */}
-          <div className="flex flex-col items-center justify-center text-center space-y-6">
-            <div className="text-6xl">📅</div>
-            <h2
-              className="text-3xl sm:text-4xl font-bold"
-              style={{ fontFamily: "var(--font-fredoka)", color: "#0A1628" }}
-            >
-              Book Your Wash
-            </h2>
-            <p className="text-lg text-gray-600 max-w-sm">
-              Click the button below to pick your date and time. You&apos;ll get a confirmation straight to your email!
-            </p>
-
-            {/* Google Calendar Scheduling Button */}
-            <div id="booking-button-target" className="mt-4" />
-            <Script
-              src="https://calendar.google.com/calendar/scheduling-button-script.js"
-              strategy="lazyOnload"
-              onLoad={() => {
-                const target = document.getElementById("booking-button-target");
-                if (target && (window as unknown as Record<string, unknown>).calendar) {
-                  ((window as unknown as Record<string, { load: (opts: unknown) => void }>).calendar).schedulingButton.load({
-                    url: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0uxFQX4ffXm3eY8ByKbNd6n92EQ7bSQEUzxFuY4iI9mmsSvktBTLsaDIc09e55yDKaTI4xEXoL?gv=true",
-                    color: "#00AAFF",
-                    label: "Book Your Wash!",
-                    target,
-                  });
-                }
-              }}
-            />
-
-            {/* Fallback direct link */}
-            <a
-              href="https://calendar.app.google/BFwYjXiGc6sJ1L4b6"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cta-button text-lg"
-              style={{ display: "inline-block" }}
-            >
-              📅 Open Booking Calendar
-            </a>
-
-            <p className="text-sm text-gray-400">
-              Opens Google Calendar — works on any phone or computer
-            </p>
+          {/* Form */}
+          <div>
+            {submitted ? (
+              <div className="fun-card text-center py-16" style={{ backgroundColor: "#F0FFF0" }}>
+                <div className="text-6xl mb-4">🎉</div>
+                <h2
+                  className="text-2xl font-bold mb-2"
+                  style={{ fontFamily: "var(--font-fredoka)", color: "#7FE000" }}
+                >
+                  Booking Request Sent!
+                </h2>
+                <p className="text-gray-600 mb-2">
+                  We will text or call you back within 24 hours to confirm your appointment.
+                </p>
+                <p className="text-gray-500 text-sm">
+                  Your booking details have been sent to the Whacko&apos;s Wash team.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Your Name *</label>
+                  <input type="text" name="name" value={form.name} onChange={handleChange} required
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
+                    placeholder="What should we call you?" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Email *</label>
+                  <input type="email" name="email" value={form.email} onChange={handleChange} required
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
+                    placeholder="your@email.com" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Phone</label>
+                  <input type="tel" name="phone" value={form.phone} onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
+                    placeholder="(541) 555-1234" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Car Type / Size</label>
+                  <input type="text" name="carType" value={form.carType} onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
+                    placeholder="e.g. Honda Civic, Toyota 4Runner" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Service Wanted *</label>
+                  <select name="service" value={form.service} onChange={handleChange} required
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors bg-white">
+                    <option value="">Pick a service...</option>
+                    <option value="exterior">Basic Exterior Wash - $25</option>
+                    <option value="interior">Interior Vacuum & Wipe - $30</option>
+                    <option value="full-interior">Full Interior Detail - $60</option>
+                    <option value="combo">Exterior + Interior Combo - $75</option>
+                    <option value="sparkle">Complete Sparkle Package - $100</option>
+                    <option value="fleet">Fleet / Multiple Cars - Call for pricing</option>
+                    <option value="other">Not sure yet</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Preferred Date</label>
+                  <input type="date" name="preferredDate" value={form.preferredDate} onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
+                    min={new Date().toISOString().split("T")[0]} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1" style={{ color: "#0A1628" }}>Message</label>
+                  <textarea name="message" value={form.message} onChange={handleChange} rows={3}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors resize-none"
+                    placeholder="Anything else we should know?" />
+                </div>
+                {error && (
+                  <p className="text-red-500 text-sm font-bold">{error}</p>
+                )}
+                <button type="submit" disabled={loading} className="cta-button w-full text-center text-lg" style={{ opacity: loading ? 0.7 : 1 }}>
+                  {loading ? "Sending..." : "Book My Wash!"}
+                </button>
+              </form>
+            )}
           </div>
 
           {/* Contact info */}
@@ -127,12 +191,12 @@ export default function Contact() {
             </div>
 
             <div className="fun-card text-center" style={{ background: "linear-gradient(135deg, #FFD700, #FF8C00)" }}>
-              <div className="text-4xl mb-3">⚡</div>
+              <div className="text-4xl mb-3">📅</div>
               <p className="text-white font-bold" style={{ fontFamily: "var(--font-fredoka)", fontSize: "1.1rem" }}>
-                Book now and get a confirmation instantly!
+                We&apos;ll confirm your appointment within 24 hours!
               </p>
               <p className="text-white text-sm mt-1 opacity-90">
-                Real-time availability. No waiting on a callback.
+                Booking goes straight to our calendar so we stay organized.
               </p>
             </div>
           </div>
