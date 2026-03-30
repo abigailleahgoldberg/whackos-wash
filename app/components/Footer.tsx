@@ -43,7 +43,7 @@ export default function Footer() {
             </h4>
             <div className="space-y-2 text-sm text-gray-300">
               <p>📧 hello@whackoswash.com</p>
-              <p>📱 (503) 555-WASH</p>
+              <p>📱 (888) 230-6442</p>
               <p>📍 Klamath Falls, OR</p>
             </div>
           </div>
