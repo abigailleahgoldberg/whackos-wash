@@ -41,7 +41,7 @@ const tiers = [
     price: "$100",
     desc: "Everything + wax",
     features: [
-      "Everything in Full Clean",
+      "Everything in Full Interior Detail",
       "Hand wax and polish",
       "Tire and rim detail",
       "Air freshener included",
@@ -49,6 +49,19 @@ const tiers = [
     ],
     color: "#FFD700",
     emoji: "🌟",
+  },
+  {
+    name: "Fleet / Multiple Cars",
+    price: "Call for pricing",
+    desc: "Got more than one?",
+    features: [
+      "Discounts for multiple vehicles",
+      "Neighbors, family, businesses welcome",
+      "Custom schedule available",
+      "Let's figure out a deal together",
+    ],
+    color: "#FF3333",
+    emoji: "🚐",
   },
 ];
 
@@ -134,7 +147,7 @@ export default function Pricing() {
                   ))}
                 </ul>
                 <Link href="/contact" className="cta-button text-sm w-full text-center">
-                  Book Now
+                  {tier.price === "Call for pricing" ? "Get in Touch" : "Book Now"}
                 </Link>
               </div>
             ))}
