@@ -170,7 +170,7 @@ export default function Contact() {
                   <span className="text-3xl">📱</span>
                   <div>
                     <p className="font-bold" style={{ color: "#0A1628" }}>Text or Call</p>
-                    <p className="text-gray-600">(541) 555-WASH</p>
+                    <p className="text-gray-600">(888) 230-6442</p>
                   </div>
                 </div>
                 <div className="fun-card bg-green-50 flex items-center gap-4">
