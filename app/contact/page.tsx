@@ -177,7 +177,7 @@ export default function Contact() {
                   <span className="text-3xl">📧</span>
                   <div>
                     <p className="font-bold" style={{ color: "#0A1628" }}>Email</p>
-                    <p className="text-gray-600">hello@whackoswash.com</p>
+                    <a href="mailto:hello@whackoswash.com" className="text-gray-600 hover:underline">hello@whackoswash.com</a>
                   </div>
                 </div>
                 <div className="fun-card bg-yellow-50 flex items-center gap-4">
