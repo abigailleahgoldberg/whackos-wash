@@ -5,7 +5,7 @@ import WaveDivider from "../components/WaveDivider";
 export const metadata: Metadata = {
   title: "About Whacko | Kid Entrepreneur Car Wash Klamath Falls",
   description:
-    "Meet Whacko — a 15-year-old Klamath Falls entrepreneur who started his own car washing business. Real hustle, real sparkle.",
+    "Meet Whacko — a 12-year-old Klamath Falls entrepreneur who started his own car washing business. Real hustle, real sparkle.",
 };
 
 export default function About() {
@@ -69,7 +69,7 @@ export default function About() {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
-                I&apos;m 15 years old, and I live right here in Klamath Falls, Oregon. Ever
+                I&apos;m 12 years old, and I live right here in Klamath Falls, Oregon. Ever
                 since I was little, I loved washing my parents&apos; cars. Something about
                 seeing a dirty car turn shiny and new just makes me happy.
               </p>
