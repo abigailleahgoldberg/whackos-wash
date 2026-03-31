@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; // v2 — googleapis installed
 import { google } from "googleapis";
 
 export async function POST(req: NextRequest) {
