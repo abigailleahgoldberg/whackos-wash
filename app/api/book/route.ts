@@ -1,5 +1,40 @@
-import { NextRequest, NextResponse } from "next/server"; // v2 — googleapis installed
-import { google } from "googleapis";
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+
+async function getGoogleAccessToken(serviceAccountJson: string): Promise<string> {
+  const sa = JSON.parse(serviceAccountJson);
+  const now = Math.floor(Date.now() / 1000);
+  
+  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({
+    iss: sa.client_email,
+    scope: "https://www.googleapis.com/auth/calendar",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600,
+    iat: now,
+  })).toString("base64url");
+
+  const signingInput = `${header}.${payload}`;
+  
+  // Use Node.js crypto to sign with RS256
+  const { createSign } = await import("crypto");
+  const sign = createSign("RSA-SHA256");
+  sign.update(signingInput);
+  const signature = sign.sign(sa.private_key, "base64url");
+  
+  const jwt = `${signingInput}.${signature}`;
+  
+  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
+  });
+  
+  const tokenData = await tokenRes.json();
+  if (!tokenData.access_token) throw new Error(`Token error: ${JSON.stringify(tokenData)}`);
+  return tokenData.access_token;
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -26,48 +61,41 @@ export async function POST(req: NextRequest) {
 
   const serviceName = serviceLabels[service] || service;
 
-  // --- Google Calendar ---
+  // --- Google Calendar (direct HTTP, no googleapis dependency) ---
   let calendarEventLink = "";
   if (CALENDAR_ID && SERVICE_ACCOUNT_JSON) {
     try {
-      const serviceAccount = JSON.parse(SERVICE_ACCOUNT_JSON);
-      const auth = new google.auth.GoogleAuth({
-        credentials: serviceAccount,
-        scopes: ["https://www.googleapis.com/auth/calendar"],
-      });
-      const calendar = google.calendar({ version: "v3", auth });
+      const accessToken = await getGoogleAccessToken(SERVICE_ACCOUNT_JSON);
 
-      // Build event date — preferredDate is YYYY-MM-DD, treat as all-day if no time given
-      let startDateTime: string;
-      let endDateTime: string;
-      if (preferredDate) {
-        startDateTime = `${preferredDate}T09:00:00`;
-        endDateTime = `${preferredDate}T10:00:00`;
-      } else {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const d = tomorrow.toISOString().split("T")[0];
-        startDateTime = `${d}T09:00:00`;
-        endDateTime = `${d}T10:00:00`;
-      }
+      const startDate = preferredDate || new Date(Date.now() + 86400000).toISOString().split("T")[0];
+      const eventBody = {
+        summary: `Whacko's Wash — ${name} (${serviceName})`,
+        description: `Customer: ${name}\nEmail: ${email}\nPhone: ${phone || "not provided"}\nCar: ${carType || "not specified"}\nService: ${serviceName}\nMessage: ${message || "none"}`,
+        start: { dateTime: `${startDate}T09:00:00`, timeZone: "America/Los_Angeles" },
+        end: { dateTime: `${startDate}T10:00:00`, timeZone: "America/Los_Angeles" },
+      };
 
-      const event = await calendar.events.insert({
-        calendarId: CALENDAR_ID,
-        requestBody: {
-          summary: `Whacko's Wash — ${name} (${serviceName})`,
-          description: `Customer: ${name}\nEmail: ${email}\nPhone: ${phone || "not provided"}\nCar: ${carType || "not specified"}\nService: ${serviceName}\nMessage: ${message || "none"}`,
-          start: { dateTime: startDateTime, timeZone: "America/Los_Angeles" },
-          end: { dateTime: endDateTime, timeZone: "America/Los_Angeles" },
-        },
-      });
-      calendarEventLink = event.data.htmlLink || "";
+      const calRes = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventBody),
+        }
+      );
+
+      const calData = await calRes.json();
+      calendarEventLink = calData.htmlLink || "";
     } catch (calErr) {
-      console.error("Google Calendar error:", calErr);
-      // Don't block booking if calendar fails
+      console.error("Calendar error:", calErr);
+      // Don't block booking on calendar failure
     }
   }
 
-  // --- Business notification email ---
+  // --- Business notification ---
   const businessHtmlBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #00AAFF, #7FE000); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -84,12 +112,15 @@ export async function POST(req: NextRequest) {
           <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #666;">Preferred Date</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${preferredDate || "Flexible"}</td></tr>
           <tr><td style="padding: 10px 0; font-weight: bold; color: #666; vertical-align: top;">Message</td><td style="padding: 10px 0; color: #444;">${message || "None"}</td></tr>
         </table>
-        ${calendarEventLink ? `<div style="margin-top: 24px; padding: 16px; background: #e8f5e9; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #2e7d32;">✅ Added to Google Calendar — <a href="${calendarEventLink}" style="color: #1565c0;">View Event</a></p></div>` : `<div style="margin-top: 24px; padding: 16px; background: #FFD700; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #0A1628;">→ Respond to ${email} to confirm</p></div>`}
+        ${calendarEventLink
+          ? `<div style="margin-top: 24px; padding: 16px; background: #e8f5e9; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #2e7d32;">✅ Added to Google Calendar — <a href="${calendarEventLink}" style="color: #1565c0;">View Event</a></p></div>`
+          : `<div style="margin-top: 24px; padding: 16px; background: #FFD700; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #0A1628;">→ Reply to ${email} to confirm appointment</p></div>`
+        }
       </div>
     </div>
   `;
 
-  // --- Client confirmation email ---
+  // --- Client confirmation ---
   const clientHtmlBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #00AAFF, #7FE000); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -128,10 +159,11 @@ export async function POST(req: NextRequest) {
     if (!businessRes.ok) {
       const err = await businessRes.text();
       console.error("Business email failed:", err);
-      return NextResponse.json({ error: "Booking received but notification failed" }, { status: 500 });
+      return NextResponse.json({ error: "Notification failed" }, { status: 500 });
     }
 
-    const clientRes = await fetch("https://api.brevo.com/v3/smtp/email", {
+    // Client confirmation
+    await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -142,13 +174,9 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    if (!clientRes.ok) {
-      console.error("Client email failed:", await clientRes.text());
-    }
-
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Booking API error:", err);
+    console.error("Booking error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
