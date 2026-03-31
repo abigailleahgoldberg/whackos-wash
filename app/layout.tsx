@@ -19,7 +19,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Whacko's Wash | Kid-Powered Car Detailing Klamath Falls Oregon",
   description:
-    "Whacko's Wash — Klamath Falls' most fun car detailing service, run by a 12-year-old entrepreneur! Exterior wash from $25, full detail, Sparkle Package. Book online now!",
+    "Whacko's Wash — Klamath Falls' most fun car detailing service, run by a 15-year-old entrepreneur! Exterior wash from $25, full detail, Sparkle Package. Book online now!",
   keywords:
     "whackos wash, car detailing klamath falls, kids car wash klamath falls, fun car cleaning klamath falls, car wash klamath falls oregon, affordable car detail oregon, kid entrepreneur klamath falls",
   metadataBase: new URL("https://whackoswash.com"),
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Whacko's Wash | Kid-Powered Car Detailing",
     description:
-      "A 12-year-old entrepreneur in Klamath Falls washing cars and making them sparkle. Book your wash online!",
+      "A 15-year-old entrepreneur in Klamath Falls washing cars and making them sparkle. Book your wash online!",
     url: "https://whackoswash.com",
     siteName: "Whacko's Wash",
     locale: "en_US",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Whacko's Wash | Kid-Powered Car Detailing",
     description:
-      "A 12-year-old entrepreneur in Klamath Falls washing cars and making them sparkle. Book your wash online!",
+      "A 15-year-old entrepreneur in Klamath Falls washing cars and making them sparkle. Book your wash online!",
     images: ["/opengraph-image"],
   },
   robots: {
