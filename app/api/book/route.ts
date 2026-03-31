@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { google } from "googleapis";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -6,6 +7,8 @@ export async function POST(req: NextRequest) {
 
   const BREVO_API_KEY = process.env.BREVO_API_KEY;
   const BOOKING_EMAIL = process.env.BOOKING_EMAIL;
+  const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
+  const SERVICE_ACCOUNT_JSON = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
   if (!BREVO_API_KEY || !BOOKING_EMAIL) {
     return NextResponse.json({ error: "Email service not configured" }, { status: 500 });
@@ -23,7 +26,48 @@ export async function POST(req: NextRequest) {
 
   const serviceName = serviceLabels[service] || service;
 
-  // Business notification email
+  // --- Google Calendar ---
+  let calendarEventLink = "";
+  if (CALENDAR_ID && SERVICE_ACCOUNT_JSON) {
+    try {
+      const serviceAccount = JSON.parse(SERVICE_ACCOUNT_JSON);
+      const auth = new google.auth.GoogleAuth({
+        credentials: serviceAccount,
+        scopes: ["https://www.googleapis.com/auth/calendar"],
+      });
+      const calendar = google.calendar({ version: "v3", auth });
+
+      // Build event date — preferredDate is YYYY-MM-DD, treat as all-day if no time given
+      let startDateTime: string;
+      let endDateTime: string;
+      if (preferredDate) {
+        startDateTime = `${preferredDate}T09:00:00`;
+        endDateTime = `${preferredDate}T10:00:00`;
+      } else {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const d = tomorrow.toISOString().split("T")[0];
+        startDateTime = `${d}T09:00:00`;
+        endDateTime = `${d}T10:00:00`;
+      }
+
+      const event = await calendar.events.insert({
+        calendarId: CALENDAR_ID,
+        requestBody: {
+          summary: `Whacko's Wash — ${name} (${serviceName})`,
+          description: `Customer: ${name}\nEmail: ${email}\nPhone: ${phone || "not provided"}\nCar: ${carType || "not specified"}\nService: ${serviceName}\nMessage: ${message || "none"}`,
+          start: { dateTime: startDateTime, timeZone: "America/Los_Angeles" },
+          end: { dateTime: endDateTime, timeZone: "America/Los_Angeles" },
+        },
+      });
+      calendarEventLink = event.data.htmlLink || "";
+    } catch (calErr) {
+      console.error("Google Calendar error:", calErr);
+      // Don't block booking if calendar fails
+    }
+  }
+
+  // --- Business notification email ---
   const businessHtmlBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #00AAFF, #7FE000); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -40,14 +84,12 @@ export async function POST(req: NextRequest) {
           <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #666;">Preferred Date</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${preferredDate || "Flexible"}</td></tr>
           <tr><td style="padding: 10px 0; font-weight: bold; color: #666; vertical-align: top;">Message</td><td style="padding: 10px 0; color: #444;">${message || "None"}</td></tr>
         </table>
-        <div style="margin-top: 24px; padding: 16px; background: #FFD700; border-radius: 12px; text-align: center;">
-          <p style="margin: 0; font-weight: bold; color: #0A1628;">→ Respond to ${email} to confirm</p>
-        </div>
+        ${calendarEventLink ? `<div style="margin-top: 24px; padding: 16px; background: #e8f5e9; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #2e7d32;">✅ Added to Google Calendar — <a href="${calendarEventLink}" style="color: #1565c0;">View Event</a></p></div>` : `<div style="margin-top: 24px; padding: 16px; background: #FFD700; border-radius: 12px; text-align: center;"><p style="margin: 0; font-weight: bold; color: #0A1628;">→ Respond to ${email} to confirm</p></div>`}
       </div>
     </div>
   `;
 
-  // Client confirmation email
+  // --- Client confirmation email ---
   const clientHtmlBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #00AAFF, #7FE000); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
@@ -72,13 +114,9 @@ export async function POST(req: NextRequest) {
   `;
 
   try {
-    // Send to business
     const businessRes = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
-      headers: {
-        "api-key": BREVO_API_KEY,
-        "Content-Type": "application/json",
-      },
+      headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: { name: "Whacko's Wash Website", email: "abigailleahgoldberg@gmail.com" },
         to: [{ email: BOOKING_EMAIL, name: "Whacko's Wash" }],
@@ -93,13 +131,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Booking received but notification failed" }, { status: 500 });
     }
 
-    // Send confirmation to customer
     const clientRes = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
-      headers: {
-        "api-key": BREVO_API_KEY,
-        "Content-Type": "application/json",
-      },
+      headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: { name: "Whacko's Wash", email: "abigailleahgoldberg@gmail.com" },
         to: [{ email: email, name: name }],
@@ -109,10 +143,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!clientRes.ok) {
-      const err = await clientRes.text();
-      console.error("Client email failed:", err);
-      // Still success because business email went through
-      return NextResponse.json({ success: true });
+      console.error("Client email failed:", await clientRes.text());
     }
 
     return NextResponse.json({ success: true });
