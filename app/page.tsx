@@ -139,7 +139,7 @@ export default function Home() {
             Hi, I&apos;m Whacko! 👋
           </h2>
           <p className="text-lg sm:text-xl leading-relaxed" style={{ color: "#333" }}>
-            At just 12 years old I started Whacko&apos;s Wash right here in Klamath Falls,
+            At just 15 years old I started Whacko&apos;s Wash right here in Klamath Falls,
             Oregon because I love making cars shine! Every wash gets the full Whacko
             treatment: serious scrubbing, serious sparkle. Your car is in good hands.
           </p>
