@@ -40,6 +40,12 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { name, email, phone, carType, service, message, preferredDate } = body;
 
+  console.log("[book] handler start");
+  console.log("[book] BREVO_API_KEY set:", !!process.env.BREVO_API_KEY);
+  console.log("[book] BOOKING_EMAIL:", process.env.BOOKING_EMAIL);
+  console.log("[book] CALENDAR_ID set:", !!process.env.GOOGLE_CALENDAR_ID);
+  console.log("[book] SA_JSON set:", !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+
   const BREVO_API_KEY = process.env.BREVO_API_KEY;
   const BOOKING_EMAIL = process.env.BOOKING_EMAIL;
   const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID;
@@ -175,8 +181,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Booking error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[book] FATAL:", msg);
+    return NextResponse.json({ error: "Server error", detail: msg }, { status: 500 });
   }
 }
